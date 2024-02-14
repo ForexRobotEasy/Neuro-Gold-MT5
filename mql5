@@ -1,0 +1,66 @@
+
+// Neuro Gold MT5
+// Developer's site: forexroboteasy.com
+// Development: Forex Robot Easy Team
+
+// Include necessary libraries
+#include <Trade\Trade.mqh>
+#include <NeuroFX\NeuroFX.mqh>
+
+// Define input parameters
+input double LotSize = 0.01; // Trading lot size
+input double StopLoss = 50; // Stop loss level
+input double TakeProfit = 100; // Take profit level
+
+// Initialize trade and NeuroFX objects
+CTrade trade;
+NeuroFX neuroFX;
+
+// Initialize trade functions
+void OpenBuyTrade(double price)
+{
+   trade.Buy(LotSize, price, StopLoss, TakeProfit, 'Neuro Gold MT5');
+}
+
+void OpenSellTrade(double price)
+{
+   trade.Sell(LotSize, price, StopLoss, TakeProfit, 'Neuro Gold MT5');
+}
+
+void CloseAllTrades()
+{
+   trade.CloseAll('Neuro Gold MT5');
+}
+
+// Initialize NeuroFX functions
+void TrainNeuralNetwork()
+{
+   neuroFX.Train(); // Train the neural network with historical data
+}
+
+void PredictNextPrice()
+{
+   double nextPrice = neuroFX.Predict(); // Predict the next price using the trained neural network
+   if (nextPrice > 0)
+   {
+      OpenBuyTrade(nextPrice); // Open a buy trade at the predicted price
+   }
+   else if (nextPrice < 0)
+   {
+      OpenSellTrade(-nextPrice); // Open a sell trade at the opposite of the predicted price
+   }
+}
+
+// Entry point of the program
+void OnTick()
+{
+   CloseAllTrades(); // Close all existing trades before making new predictions
+   TrainNeuralNetwork(); // Train the neural network with updated historical data
+   PredictNextPrice(); // Predict the next price and open trades accordingly
+}
+
+// Program termination
+void OnDeinit(const int reason)
+{
+   CloseAllTrades(); // Close all trades before terminating the program
+}
